@@ -1,2 +1,5 @@
-10.51.1.86
-10.51.3.103
+[web_servers]
+10.51.3.51  ansible_user=test   ansible_become_password=456789
+
+[db_servers]
+10.51.3.103 ansible_user=andres ansible_become_password=112609
