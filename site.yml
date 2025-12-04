@@ -1,40 +1,44 @@
 ---
 - hosts: all
   become: true
+  gather_facts: yes
+
   pre_tasks:
 
-  - name: install updates for Fedora
-    tags: always
-    ansible.builtin.dnf:
-      update_only: yes
-      update_cache: yes
-    when: ansible_distribution == 'Fedora'
+    # FEDORA: use raw dnf instead of Ansible's dnf/package (libdnf5 workaround)
+    - name: Install updates for Fedora (workaround libdnf5 issue)
+      tags: always, fedora
+      ansible.builtin.shell: dnf -y upgrade
+      when: ansible_distribution == 'Fedora'
 
-  - name: install updates for Ubuntu
-    tags: always
-    ansible.builtin.apt:
-      upgrade: dist
-      update_cache: yes
-    when: ansible_distribution == 'Ubuntu'
+    # UBUNTU: normal apt upgrade
+    - name: Install updates for Ubuntu
+      tags: always, ubuntu
+      ansible.builtin.apt:
+        upgrade: dist
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
 
-- hosts: web_servers
+
+- hosts: ubuntu
   become: true
   tasks:
 
-  - name: Install apache on web web_servers
-    tags: apache, ubuntu
-    ansible.builtin.apt:
-      name:
-        - apache2
-        - libapache2-mod-php
-    when: ansible_distribution == 'Ubuntu'
+    - name: Install apache on web web_servers
+      tags: apache, ubuntu
+      ansible.builtin.apt:
+        name:
+          - apache2
+          - libapache2-mod-php
+        state: present
+      when: ansible_distribution == 'Ubuntu'
 
-- hosts: db_servers
+
+- hosts: fedora
   tags: db, fedora
   become: true
   tasks:
- 
-  - name: Install mariadb on db_servers
-    ansible.builtin.dnf:
-      name: mariadb
-    when: ansible_distribution == 'Fedora'
+
+    - name: Install mariadb on db_servers (Fedora, libdnf5 workaround)
+      ansible.builtin.shell: dnf -y install mariadb
+      when: ansible_distribution == 'Fedora'
