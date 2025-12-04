@@ -3,3 +3,13 @@
 
 [db_servers]
 10.51.3.103 ansible_user=andres ansible_become_password=112609
+
+[windows]
+10.51.0.243
+
+[windows:vars]
+ansible_user=User
+ansible_password=123456
+ansible_connection=winrm
+ansible_winrm_transport=ntlm
+ansible_winrm_server_cert_validation=ignore

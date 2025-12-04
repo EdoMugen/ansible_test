@@ -1,0 +1,37 @@
+---
+- name: Uninstall Python, Git, VSCode, Docker from Windows
+  hosts: windows
+  gather_facts: no
+
+  collections:
+    - ansible.windows
+
+  tasks:
+    - name: Remove Python (any choco variant we used)
+      win_chocolatey:
+        name:
+          - python
+        state: absent
+        force: yes
+
+    - name: Remove Git (CLI)
+      win_chocolatey:
+        name:
+          - git
+          - git.install
+        state: absent
+        force: yes
+
+    - name: Remove Visual Studio Code
+      win_chocolatey:
+        name:
+          - vscode.install
+        state: absent
+        force: yes
+
+    - name: Remove Docker Desktop
+      win_chocolatey:
+        name:
+          - docker-desktop
+        state: absent
+        force: yes

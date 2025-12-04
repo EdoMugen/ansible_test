@@ -1,0 +1,15 @@
+---
+- name: Uninstall Node.js and VS Code from Windows
+  hosts: windows
+  gather_facts: no
+
+  collections:
+    - ansible.windows
+
+  tasks:
+    - name: Remove Node.js and VS Code (Chocolatey)
+      win_chocolatey:
+        name:
+          - nodejs.install
+          - vscode.install
+        state: absent

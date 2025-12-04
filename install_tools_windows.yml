@@ -1,0 +1,15 @@
+---
+- name: Install Node.js and VS Code on Windows
+  hosts: windows
+  gather_facts: no
+
+  collections:
+    - ansible.windows
+
+  tasks:
+    - name: Ensure Node.js and VS Code are installed (Chocolatey)
+      win_chocolatey:
+        name:
+          - nodejs.install
+          - vscode.install
+        state: present
